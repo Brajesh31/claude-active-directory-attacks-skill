@@ -1,89 +1,136 @@
-# claude-active-directory-attacks-skill
+# Active Directory Security Assessment Skill
 
-A Claude Code skill for understanding Active Directory security risks and conducting authorized domain security assessments.
+A structured skill for reviewing Microsoft Active Directory security, understanding identity attack paths, organizing an authorized assessment, and turning findings into defensible remediation actions.
 
-## Overview
+This repository contains technical material about Active Directory attack techniques. Use it only in an environment you own or are explicitly authorized to assess. Do not run intrusive tests against production systems without written authorization, a defined scope, and an approved test window.
 
-This skill covers Active Directory security concepts and assessment workflows involving domain discovery, identity configuration, Kerberos, authentication protocols, delegation, privilege boundaries, and lateral-movement risk.
+## Scope and Authorized Use
 
-Use it only in an authorized lab, internal assessment, or environment where explicit permission has been granted.
+Before any assessment, establish:
 
-## Main Assessment Areas
+- Written authorization from the system owner.
+- Exact domains, forests, hosts, networks, and accounts in scope.
+- Explicitly permitted and prohibited test activities.
+- Test window, emergency contacts, and stop conditions.
+- Credential handling, evidence storage, and data-retention rules.
+- Whether any validation may modify directory objects or affect authentication.
 
-- Active Directory domain and trust architecture.
-- Identity and group membership review.
-- Kerberos configuration and ticket-related risks.
-- NTLM and authentication policy review.
-- Delegation and service account exposure.
-- Privileged group and access analysis.
-- Domain controller security posture.
-- Lateral movement risk assessment.
-- Detection and monitoring coverage.
-- Evidence and remediation planning.
+Use an isolated lab whenever a technique could extract credentials, impersonate an identity, change directory permissions, or affect domain availability. Do not collect or retain real user passwords, hashes, tickets, or private data unless the authorization explicitly permits the activity and a secure handling plan is in place.
+
+## What the Skill Covers
+
+The skill organizes Active Directory security topics across:
+
+- Domain architecture and identity configuration.
+- Directory reconnaissance and relationship mapping.
+- Kerberos and NTLM security considerations.
+- Delegation and privileged-account exposure.
+- Active Directory Certificate Services configuration.
+- Group Policy and domain trust risks.
+- Lateral-movement and privilege-escalation paths.
+- Security-control validation and remediation planning.
+
+## When to Use It
+
+Use this skill when preparing an authorized internal security review, assessing an isolated training environment, reviewing identity configuration, documenting directory attack paths, or prioritizing Active Directory hardening work.
+
+It is not a substitute for an approved penetration-test plan, a production change-management process, or an independent security review.
 
 ## Installation
 
-```bash
+~~~bash
 git clone https://github.com/Brajesh31/claude-active-directory-attacks-skill.git ~/.claude/skills/active-directory-attacks
-```
+~~~
 
-## Usage
+## Invocation
 
-Invoke the skill for an authorized Active Directory security review:
+~~~text
+/Active-Directory-Attacks
+~~~
 
-```text
-/active-directory-attacks
-```
-
-Provide the assessment scope, domain environment, permitted test methods, account privileges, and any prohibited actions.
+Provide the assessment objective, authorized scope, environment type, permitted test methods, and operational constraints.
 
 ## Recommended Assessment Workflow
 
-1. Confirm written authorization and scope.
-2. Identify domain boundaries and assessment objectives.
-3. Review identity, group, and trust configuration.
-4. Inspect authentication and delegation settings.
-5. Identify excessive privileges and risky service accounts.
-6. Validate findings with non-destructive methods where possible.
-7. Collect sanitized evidence.
-8. Assess impact and likely attack paths.
-9. Recommend configuration and monitoring improvements.
-10. Re-test remediated controls.
+### 1. Confirm authorization and scope
 
-## Defensive Focus
+Use the [assessment scope template](references/authorized-assessment-scope-template.md). Confirm the exact environment and stop conditions before any validation.
 
-- Apply least privilege to users and service accounts.
-- Reduce unnecessary domain administrator membership.
-- Review delegation configuration.
-- Enforce strong authentication policies.
-- Monitor privileged operations and unusual authentication.
-- Protect domain controllers and administrative workstations.
-- Maintain clear ownership of service accounts.
-- Review stale identities and unused permissions.
+### 2. Establish the environment baseline
 
-## Reference Guide
+Record domain and forest structure, domain controllers, trust relationships, identity systems, critical services, and existing monitoring. Avoid making assumptions based on partial discovery.
 
-The repository includes `references/advanced-attacks.md` for additional technical assessment concepts and defensive considerations.
+### 3. Review identity and privilege configuration
 
-## Reporting Checklist
+Assess privileged groups, service identities, delegation settings, stale accounts, password policy, authentication controls, and administrative separation. Use read-only methods wherever possible.
 
-- Scope and authorization are recorded.
-- Findings are supported by evidence.
-- Sensitive credentials and hashes are not exposed.
-- Impact is explained in business terms.
-- Remediation is specific and testable.
-- Limitations and untested areas are disclosed.
+### 4. Review high-risk configuration areas
 
-## Repository Contents
+Prioritize Kerberos and NTLM controls, certificate services, Group Policy permissions, trust relationships, legacy protocols, and service-account design. Record evidence and affected assets.
 
-- `SKILL.md`: Main Active Directory assessment instructions.
-- `references/advanced-attacks.md`: Advanced assessment reference.
-- `README.md`: Scope, workflow, and defensive guidance.
+### 5. Map exposure and control gaps
 
-## Safety Boundaries
+Describe the path from a weakness to potential impact without unnecessarily collecting secrets or changing live directory state. Distinguish confirmed misconfiguration from a theoretical path.
 
-Do not attempt domain compromise, persistence, credential extraction, or lateral movement outside the agreed assessment scope. Stop if the activity risks service disruption or exposes unrelated sensitive information.
+### 6. Validate monitoring and response
 
-## Practical Principle
+Where authorized, verify that identity and directory security events are logged, routed, retained, and investigated. Use non-disruptive test events or simulation procedures where possible.
 
-The objective of a security assessment is to identify and reduce risk, not to maximize access. Keep testing proportionate, authorized, and evidence-driven.
+### 7. Prioritize remediation
+
+Use the [defensive hardening checklist](references/defensive-hardening-checklist.md) to turn findings into changes such as least-privilege corrections, stronger authentication controls, certificate-template hardening, and improved monitoring.
+
+### 8. Report and retest
+
+Document affected systems, business impact, evidence, remediation owner, and retest result. Do not claim a control is effective until the corrected configuration has been verified.
+
+## Defensive Review Areas
+
+| Area | What to review | Defensive outcome |
+|---|---|---|
+| Privileged groups | Membership, nested groups, standing access | Reduce unnecessary privilege |
+| Service accounts | Password age, SPNs, interactive logon, ownership | Use managed identities and least privilege |
+| Kerberos | Legacy encryption, delegation, ticket exposure | Reduce ticket abuse opportunities |
+| NTLM | Usage, relay exposure, signing requirements | Reduce or phase out NTLM where possible |
+| Certificate services | Template permissions, enrollment, issuance | Remove unsafe enrollment paths |
+| Group Policy | Edit rights, links, scripts, SYSVOL exposure | Protect policy integrity |
+| Domain trusts | Scope, authentication settings, monitoring | Limit trust exposure |
+| Monitoring | Directory changes, privileged logons, authentication anomalies | Improve detection and response |
+
+## Included Resources
+
+- [Authorization and assessment scope template](references/authorized-assessment-scope-template.md)
+- [Defensive hardening checklist](references/defensive-hardening-checklist.md)
+- [Advanced technical reference](references/advanced-attacks.md), use only within approved scope and isolated environments.
+
+## Operational Safety Checklist
+
+- Authorization and scope are documented.
+- Production systems are excluded unless expressly approved.
+- Potentially disruptive tests have a defined maintenance window.
+- Credential and evidence handling are defined.
+- No persistence or destructive changes are introduced.
+- Directory changes are approved, logged, and reversible.
+- Emergency contacts and stop conditions are known.
+- Findings are reported without exposing secrets.
+
+## Limitations
+
+Active Directory environments differ by version, configuration, network topology, and security controls. A finding in one lab does not prove the same condition exists in another environment. Validate assumptions, distinguish observed facts from hypotheses, and coordinate any changes with the system owner.
+
+## Repository Structure
+
+~~~text
+claude-active-directory-attacks-skill/
+├── SKILL.md
+├── README.md
+├── LICENSE
+└── references/
+    ├── advanced-attacks.md
+    ├── authorized-assessment-scope-template.md
+    └── defensive-hardening-checklist.md
+~~~
+
+## License
+
+Released under the MIT License. Copyright (c) 2026 Brajesh Kumar. See the root `LICENSE` file for the complete terms.
